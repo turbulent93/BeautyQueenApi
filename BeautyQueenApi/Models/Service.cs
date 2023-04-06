@@ -9,5 +9,6 @@ namespace BeautyQueenApi.Models
         public string Name { get; set; }
         public int Price { get; set; }
         public int Duration { get; set; }
+        public List<Employee> Employees { get; set; }
     }
 }
