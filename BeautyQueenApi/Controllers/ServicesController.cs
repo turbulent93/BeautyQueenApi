@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BeautyQueenApi.Data;
 using BeautyQueenApi.Models;
+using AutoMapper;
 
 namespace BeautyQueenApi.Controllers
 {
@@ -15,10 +16,12 @@ namespace BeautyQueenApi.Controllers
     public class ServicesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ServicesController(ApplicationDbContext context)
+        public ServicesController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet]
