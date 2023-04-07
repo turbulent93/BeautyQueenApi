@@ -10,6 +10,7 @@ using BeautyQueenApi.Models;
 using AutoMapper;
 using BeautyQueenApi.Dtos;
 using BeautyQueenApi.Dtos.Request;
+using BeautyQueenApi.Services;
 
 namespace BeautyQueenApi.Controllers
 {
@@ -17,113 +18,75 @@ namespace BeautyQueenApi.Controllers
     [ApiController]
     public class ServicesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly IServiceService _serviceService;
 
-        public ServicesController(ApplicationDbContext context, IMapper mapper)
+        public ServicesController(IServiceService serviceService)
         {
-            _context = context;
-            _mapper = mapper;
+            _serviceService = serviceService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ServiceDto>>> GetService()
         {
-            if (_context.Service == null)
+            try
+            {
+                return Ok(await _serviceService.Get());
+            }
+            catch (Exception)
             {
                 return NotFound();
             }
-            IEnumerable<Service> services = await _context.Service.ToListAsync();
-
-            return _mapper.Map<List<ServiceDto>>(services).ToList();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceDto>> GetService(int id)
         {
-            if (_context.Service == null)
+            try
+            {
+                return Ok(await _serviceService.GetById(id));
+            } catch(Exception)
             {
                 return NotFound();
             }
-            var service = await _context.Service.FindAsync(id);
-
-            if (service == null)
-            {
-                return NotFound();
-            }
-
-            return _mapper.Map<ServiceDto>(service);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutService(int id, ServiceDto serviceDto)
         {
-            Service service = _mapper.Map<Service>(serviceDto);
-
-            if (id != service.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(service).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
+                await _serviceService.Put(id, serviceDto);
+                return NoContent();
+            } catch(Exception) 
             {
-                if (!ServiceExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
-
-            return NoContent();
         }
 
         [HttpPost]
         public async Task<ActionResult<Service>> PostService(RequestServiceDto serviceDto)
         {
-            if (_context.Service == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.Service'  is null.");
+                ServiceDto service = await _serviceService.Post(serviceDto);
+                return CreatedAtAction(nameof(PostService), new { id = service.Id }, service);
+            } catch(Exception)
+            {
+                return NotFound();
             }
-            Service service = _mapper.Map<Service>(serviceDto);
-
-            _context.Service.Add(service);
-
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(PostService), new { id = service.Id }, _mapper.Map<ServiceDto>(service));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteService(int id)
         {
-            if (_context.Service == null)
+            try
+            {
+                await _serviceService.Delete(id);
+                return NoContent();
+            } catch(Exception)
             {
                 return NotFound();
             }
-            var service = await _context.Service.FindAsync(id);
-            if (service == null)
-            {
-                return NotFound();
-            }
-
-            _context.Service.Remove(service);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ServiceExists(int id)
-        {
-            return (_context.Service?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
