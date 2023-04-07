@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BeautyQueenApi.Dtos;
-using BeautyQueenApi.Dtos.Response;
+using BeautyQueenApi.Dtos.Request;
 using BeautyQueenApi.Models;
 
 namespace BeautyQueenApi.Profiles
@@ -9,8 +9,9 @@ namespace BeautyQueenApi.Profiles
     {
         public ServiceProfile()
         {
-            CreateMap<ServiceDto, ServiceDto>();
-            CreateMap<Service, ResponseServiceDto>();
+            CreateMap<ServiceDto, Service>();
+            CreateMap<Service, ServiceDto>();
+            CreateMap<RequestServiceDto, Service>();
         }
     }
 }
