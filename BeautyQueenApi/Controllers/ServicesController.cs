@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using BeautyQueenApi.Data;
 using BeautyQueenApi.Models;
 using AutoMapper;
+using BeautyQueenApi.Dtos;
+using BeautyQueenApi.Dtos.Request;
 
 namespace BeautyQueenApi.Controllers
 {
@@ -25,22 +27,24 @@ namespace BeautyQueenApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Service>>> GetService()
+        public async Task<ActionResult<IEnumerable<ServiceDto>>> GetService()
         {
-          if (_context.Service == null)
-          {
-              return NotFound();
-          }
-            return await _context.Service.ToListAsync();
+            if (_context.Service == null)
+            {
+                return NotFound();
+            }
+            IEnumerable<Service> services = await _context.Service.ToListAsync();
+
+            return _mapper.Map<List<ServiceDto>>(services).ToList();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Service>> GetService(int id)
+        public async Task<ActionResult<ServiceDto>> GetService(int id)
         {
-          if (_context.Service == null)
-          {
-              return NotFound();
-          }
+            if (_context.Service == null)
+            {
+                return NotFound();
+            }
             var service = await _context.Service.FindAsync(id);
 
             if (service == null)
@@ -48,12 +52,14 @@ namespace BeautyQueenApi.Controllers
                 return NotFound();
             }
 
-            return service;
+            return _mapper.Map<ServiceDto>(service);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutService(int id, Service service)
+        public async Task<IActionResult> PutService(int id, ServiceDto serviceDto)
         {
+            Service service = _mapper.Map<Service>(serviceDto);
+
             if (id != service.Id)
             {
                 return BadRequest();
@@ -81,16 +87,19 @@ namespace BeautyQueenApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Service>> PostService(Service service)
+        public async Task<ActionResult<Service>> PostService(RequestServiceDto serviceDto)
         {
-          if (_context.Service == null)
-          {
-              return Problem("Entity set 'ApplicationDbContext.Service'  is null.");
-          }
+            if (_context.Service == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Service'  is null.");
+            }
+            Service service = _mapper.Map<Service>(serviceDto);
+
             _context.Service.Add(service);
+
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetService", new { id = service.Id }, service);
+            return CreatedAtAction(nameof(PostService), new { id = service.Id }, _mapper.Map<ServiceDto>(service));
         }
 
         [HttpDelete("{id}")]
