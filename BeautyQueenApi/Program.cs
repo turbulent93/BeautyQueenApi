@@ -1,4 +1,5 @@
 using BeautyQueenApi.Data;
+using BeautyQueenApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PgsqlConnection")));
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+builder.Services.AddTransient<IServiceService, ServiceService>();
 
 var app = builder.Build();
 
