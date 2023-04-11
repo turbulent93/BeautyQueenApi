@@ -8,5 +8,6 @@ namespace BeautyQueenApi.Data
         public ApplicationDbContext(DbContextOptions options) : base(options) { }
         public DbSet<Employee> Employee { get; set; }
         public DbSet<Service> Service { get; set; }
+        public DbSet<Specialization> Specialization { get; set; }
     }
 }
