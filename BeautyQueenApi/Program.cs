@@ -20,6 +20,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddControllers().AddJsonOptions(x => {
     x.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+    x.JsonSerializerOptions.Converters.Add(new TimeOnlyJsonConverter());
 });
 
 builder.Services.AddTransient<IServiceService, ServiceService>();
