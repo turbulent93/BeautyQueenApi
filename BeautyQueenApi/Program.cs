@@ -1,6 +1,8 @@
+using BeautyQueenApi.Converters;
 using BeautyQueenApi.Data;
 using BeautyQueenApi.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddTransient<IServiceService, ServiceService>();
 builder.Services.AddTransient<ISpecializationService, SpecializationService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
+builder.Services.AddTransient<IScheduleService, ScheduleService>();
 
 var app = builder.Build();
 
