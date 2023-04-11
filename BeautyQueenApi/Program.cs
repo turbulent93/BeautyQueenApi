@@ -26,6 +26,7 @@ builder.Services.AddTransient<IServiceService, ServiceService>();
 builder.Services.AddTransient<ISpecializationService, SpecializationService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IScheduleService, ScheduleService>();
+builder.Services.AddTransient<IAppointmentService, AppointmentService>();
 
 var app = builder.Build();
 
