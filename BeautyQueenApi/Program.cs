@@ -18,6 +18,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddTransient<IServiceService, ServiceService>();
 builder.Services.AddTransient<ISpecializationService, SpecializationService>();
+builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 
 var app = builder.Build();
 
