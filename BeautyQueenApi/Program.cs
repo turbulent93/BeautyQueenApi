@@ -18,6 +18,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
+builder.Services.AddControllers().AddJsonOptions(x => {
+    x.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+});
+
 builder.Services.AddTransient<IServiceService, ServiceService>();
 builder.Services.AddTransient<ISpecializationService, SpecializationService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
