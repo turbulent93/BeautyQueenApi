@@ -17,6 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddTransient<IServiceService, ServiceService>();
+builder.Services.AddTransient<ISpecializationService, SpecializationService>();
 
 var app = builder.Build();
 
