@@ -1,7 +1,10 @@
+using BeautyQueenApi.Constants;
 using BeautyQueenApi.Converters;
 using BeautyQueenApi.Data;
 using BeautyQueenApi.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,11 +26,24 @@ builder.Services.AddControllers().AddJsonOptions(x => {
     x.JsonSerializerOptions.Converters.Add(new TimeOnlyJsonConverter());
 });
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = AuthOptions.ValidateAudience,
+            ValidateIssuer = AuthOptions.ValidateIssuer,
+            ValidateIssuerSigningKey = AuthOptions.ValidateIssuerSigningKey,
+            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
+        };
+    });
+
 builder.Services.AddTransient<IServiceService, ServiceService>();
 builder.Services.AddTransient<ISpecializationService, SpecializationService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IScheduleService, ScheduleService>();
 builder.Services.AddTransient<IAppointmentService, AppointmentService>();
+builder.Services.AddTransient<IAdminService, AdminService>();
 
 var app = builder.Build();
 
@@ -39,6 +55,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
