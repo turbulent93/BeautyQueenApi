@@ -11,5 +11,7 @@ namespace BeautyQueenApi.Data
         public DbSet<Specialization> Specialization { get; set; }
         public DbSet<Schedule> Schedule { get; set; }
         public DbSet<Appointment> Appointment { get; set; }
+        public DbSet<Role> Role { get; set; }
+        public DbSet<User> User { get; set; }
     }
 }
