@@ -10,7 +10,7 @@ using BeautyQueenApi.Models;
 using AutoMapper;
 using BeautyQueenApi.Dtos;
 using BeautyQueenApi.Dtos.Request;
-using BeautyQueenApi.Services;
+using BeautyQueenApi.Interfaces;
 
 namespace BeautyQueenApi.Controllers
 {

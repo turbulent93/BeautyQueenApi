@@ -2,6 +2,7 @@
 using BeautyQueenApi.Constants;
 using BeautyQueenApi.Data;
 using BeautyQueenApi.Dtos;
+using BeautyQueenApi.Interfaces;
 using BeautyQueenApi.Models;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;

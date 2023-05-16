@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BeautyQueenApi.Data;
 using BeautyQueenApi.Models;
-using BeautyQueenApi.Services;
 using BeautyQueenApi.Dtos.Request;
+using BeautyQueenApi.Interfaces;
 
 namespace BeautyQueenApi.Controllers
 {

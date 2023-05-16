@@ -2,7 +2,7 @@
 using BeautyQueenApi.Dtos.Request;
 using BeautyQueenApi.Models;
 
-namespace BeautyQueenApi.Services
+namespace BeautyQueenApi.Interfaces
 {
     public interface IAppointmentService
     {

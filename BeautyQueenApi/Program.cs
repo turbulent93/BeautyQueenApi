@@ -1,6 +1,7 @@
 using BeautyQueenApi.Constants;
 using BeautyQueenApi.Converters;
 using BeautyQueenApi.Data;
+using BeautyQueenApi.Interfaces;
 using BeautyQueenApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;

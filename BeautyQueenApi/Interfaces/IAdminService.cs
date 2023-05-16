@@ -2,7 +2,7 @@
 using BeautyQueenApi.Models;
 using System.Security.Claims;
 
-namespace BeautyQueenApi.Services
+namespace BeautyQueenApi.Interfaces
 {
     public interface IAdminService
     {

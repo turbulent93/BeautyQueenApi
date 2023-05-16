@@ -1,6 +1,6 @@
 ﻿using BeautyQueenApi.Dtos;
+using BeautyQueenApi.Interfaces;
 using BeautyQueenApi.Models;
-using BeautyQueenApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
