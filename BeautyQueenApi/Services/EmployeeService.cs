@@ -29,30 +29,28 @@ namespace BeautyQueenApi.Services
                 throw new Exception("Context Employee is null");
             }
 
-            return _mapper.Map<List<EmployeeDto>>(await _context.Employee.ToListAsync());
+            return _mapper.Map<List<EmployeeDto>>(
+                await _context.Employee
+                    .Include(x => x.Specialization)
+                    .Include(x => x.Services)
+                    .ToListAsync());
         }
 
-        public async Task<List<ServiceDto>> GetServicesById(int id)
+        public async Task<Employee> GetById(int id)
         {
             Employee? employee = await _context.Employee
                 .Where(e => e.Id == id)
                 .Include(e => e.Services)
+                .Include(e => e.Specialization)
+                .Include(e => e.User)
                 .FirstOrDefaultAsync();
-
 
             if(employee == null)
             {
                 throw new Exception("Employee is not found");
             }
 
-            List<ServiceDto> services = new();
-
-            foreach (Service service in employee.Services)
-            {
-                services.Add(_mapper.Map<ServiceDto>(service));
-            }
-
-            return services;
+            return employee;
         }
 
         public async Task<EmployeeDto> Post(RequestEmployeeDto employeeDto)
@@ -65,10 +63,13 @@ namespace BeautyQueenApi.Services
             {
                 throw new Exception("Service service is null");
             }
-
-            await AddImage(employeeDto.Image);
+            
+            _context.Entry(employee).Reference(x => x.Specialization).Load();
+            _context.Entry(employee).Reference(x => x.User).Load();
 
             await _context.SaveChangesAsync();
+
+            _context.Entry(employee).Collection(x => x.Services).Load();
 
             await SetServicesByIds(employee, employeeDto.ServiceIds);
 
@@ -90,11 +91,12 @@ namespace BeautyQueenApi.Services
 
             _context.Entry(employee).State = EntityState.Modified;
 
+            _context.Entry(employee).Collection(x => x.Services).Load();
+            _context.Entry(employee).Reference(x => x.Specialization).Load();
+            _context.Entry(employee).Reference(x => x.User).Load();
+
             await SetServicesByIds(employee, employeeDto.ServiceIds);
 
-            await AddImage(employeeDto.Image);
-
-            employee.Image = employeeDto.Image.FileName;
             await _context.SaveChangesAsync();
 
             if (!EmployeeExists(id))
@@ -120,12 +122,15 @@ namespace BeautyQueenApi.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task AddImage(IFormFile image)
+        public async Task<string> AddImage(IFormFile image)
         {
-            string path = "/Files/" + image.FileName;
+            string fileName = Guid.NewGuid() + "." + image.FileName.Split(".")[1];
+            string path = "/files/employees/" + fileName;
 
             using var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create);
             await image.CopyToAsync(fileStream);
+
+            return fileName;
         }
 
         public async Task SetServicesByIds(Employee employee, List<int> serviceIds)
