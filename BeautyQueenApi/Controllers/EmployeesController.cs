@@ -38,16 +38,28 @@ namespace BeautyQueenApi.Controllers
             }
         }
 
-        [HttpGet("{id}/services")]
-        public async Task<ActionResult<IEnumerable<ServiceDto>>> GetEmployee(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
             try
             {
-                return Ok(await _employeeService.GetServicesById(id));
+                return Ok(await _employeeService.GetById(id));
             }
             catch (Exception e)
             {
                 return NotFound(e.Message);
+            }
+        }
+
+        [HttpPost("image")]
+        public async Task<ActionResult<string>> PostImage([FromForm] IFormFile image)
+        {
+            try
+            {
+                return Ok(await _employeeService.AddImage(image));
+            } catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
 
