@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BeautyQueenApi.Models
 {
@@ -8,6 +9,7 @@ namespace BeautyQueenApi.Models
         public int Id { get; set; }
         public DateOnly Date { get; set; }
         public int EmployeeId { get; set; }
+        [JsonIgnore]
         public Employee Employee { get; set; }
     }
 }
