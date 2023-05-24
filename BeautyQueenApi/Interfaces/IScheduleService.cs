@@ -11,5 +11,6 @@ namespace BeautyQueenApi.Interfaces
         Task Delete(int id);
         Task<Schedule?> Find(int id);
         bool ServiceExists(int id);
+        Task<IEnumerable<Schedule>> GetByEmployee(int id);
     }
 }
