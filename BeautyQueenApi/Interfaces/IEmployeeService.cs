@@ -12,8 +12,8 @@ namespace BeautyQueenApi.Interfaces
         Task Delete(int id);
         bool EmployeeExists(int id);
         Task<Employee?> Find(int id);
-        Task AddImage(IFormFile image);
-        Task<List<ServiceDto>> GetServicesById(int id);
+        Task<string> AddImage(IFormFile image);
+        Task<Employee> GetById(int id);
         Task SetServicesByIds(Employee employee, List<int> serviceIds);
     }
 }
