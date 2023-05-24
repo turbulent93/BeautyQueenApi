@@ -10,10 +10,11 @@ using BeautyQueenApi.Models;
 using BeautyQueenApi.Dtos;
 using BeautyQueenApi.Dtos.Request;
 using BeautyQueenApi.Interfaces;
+using Microsoft.Build.Framework;
 
 namespace BeautyQueenApi.Controllers
 {
-    [Route("api/sschedules")]
+    [Route("api/schedules")]
     [ApiController]
     public class SchedulesController : ControllerBase
     {
@@ -58,6 +59,18 @@ namespace BeautyQueenApi.Controllers
                 await _scheduleService.Delete(id);
 
                 return NoContent();
+            } catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetByEmployee(int id)
+        {
+            try
+            {
+                return Ok(await _scheduleService.GetByEmployee(id));
             } catch(Exception e)
             {
                 return BadRequest(e.Message);
