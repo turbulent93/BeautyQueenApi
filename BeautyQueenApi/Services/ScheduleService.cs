@@ -73,5 +73,10 @@ namespace BeautyQueenApi.Services
         {
             return (_context.Schedule?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        public async Task<IEnumerable<Schedule>> GetByEmployee(int id)
+        {
+            return await _context.Schedule.Where(x => x.EmployeeId == id).ToListAsync();
+        }
     }
 }
