@@ -16,8 +16,8 @@ namespace BeautyQueenApi.Models
         public Specialization Specialization { get; set; }
         public string Image { get; set; }
         public List<Service> Services { get; set; }
-        public int UserId { get; set; }
         [JsonIgnore]
+        public int UserId { get; set; }
         public User User { get; set; }
     }
 }
