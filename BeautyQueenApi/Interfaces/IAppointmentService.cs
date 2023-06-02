@@ -10,5 +10,6 @@ namespace BeautyQueenApi.Interfaces
         Task<AppointmentDto> Post(RequestAppointmentDto appointmentDto);
         Task Delete(int id);
         Task<Appointment?> Find(int id);
+        Task<IEnumerable<Appointment>> GetBySchedule(int employeeId, int scheduleId);
     }
 }
