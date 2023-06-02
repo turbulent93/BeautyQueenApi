@@ -63,5 +63,17 @@ namespace BeautyQueenApi.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpGet("{employeeId}/by-schedule/{scheduleId}")]
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetBySchedule(int employeeId, int scheduleId)
+        {
+            try
+            {
+                return Ok(await _appoinmentService.GetBySchedule(employeeId, scheduleId));
+            } catch(Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
     }
 }
