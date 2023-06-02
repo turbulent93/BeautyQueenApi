@@ -8,7 +8,7 @@ namespace BeautyQueenApi.Interfaces
     {
         Task<Service?> Find(int id);
         Task<ServiceDto> GetById(int id);
-        Task<IEnumerable<ServiceDto>> Get();
+        Task<IEnumerable<ServiceDto>> Get(string? search);
         Task Put(int id, ServiceDto serviceDto);
         Task<ServiceDto> Post(RequestServiceDto serviceDto);
         Task Delete(int id);
