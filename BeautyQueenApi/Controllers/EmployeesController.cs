@@ -27,23 +27,23 @@ namespace BeautyQueenApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployee()
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployee(string? search)
         {
             try
             {
-                return Ok(await _employeeService.Get());
+                return Ok(await _employeeService.Get(search));
             } catch(Exception e)
             {
                 return NotFound(e.Message);
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int id)
+        [HttpGet("by-service/{id}")]
+        public async Task<ActionResult<EmployeeDto>> GetByService(int id, string? search)
         {
             try
             {
-                return Ok(await _employeeService.GetById(id));
+                return Ok(await _employeeService.GetByService(id, search));
             }
             catch (Exception e)
             {
