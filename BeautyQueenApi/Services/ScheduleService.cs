@@ -18,14 +18,27 @@ namespace BeautyQueenApi.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ScheduleDto>> Get()
+        public async Task<IEnumerable<ScheduleDto>> Get(int id, int? year, int? month)
         {
             if(_context.Schedule == null)
             {
                 throw new Exception("Context Scheudle is null");
             }
 
-            IEnumerable<Schedule> schedules = await _context.Schedule.ToListAsync();
+            IEnumerable<Schedule> schedules = await _context.Schedule
+                .ToListAsync();
+            
+            if(year != null && month != null)
+            {
+                schedules = schedules.Where(x => x.EmployeeId == id && x.Date.Year == year && x.Date.Month == month);
+            } else
+            {
+                var curDate = DateOnly.FromDateTime(DateTime.Today);
+                var date = DateOnly.FromDateTime(DateTime.Today.AddDays(10));
+
+                schedules = schedules.Where(x => x.EmployeeId == id && 
+                    x.Date >= curDate && x.Date <= date);
+            }
 
             return _mapper.Map<IEnumerable<ScheduleDto>>(schedules);
         }
