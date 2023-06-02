@@ -3,6 +3,7 @@ using System;
 using BeautyQueenApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BeautyQueenApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230601092354_AddPhoto")]
+    partial class AddPhoto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +39,14 @@ namespace BeautyQueenApi.Migrations
                     b.Property<TimeOnly>("EndAt")
                         .HasColumnType("time without time zone");
 
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("ScheduleId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ServiceId")
                         .HasColumnType("integer");
 
                     b.Property<TimeOnly>("StartAt")
@@ -47,6 +57,8 @@ namespace BeautyQueenApi.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.HasIndex("ScheduleId");
+
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("Appointment");
                 });
@@ -255,9 +267,17 @@ namespace BeautyQueenApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BeautyQueenApi.Models.Service", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Employee");
 
                     b.Navigation("Schedule");
+
+                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("BeautyQueenApi.Models.Employee", b =>
