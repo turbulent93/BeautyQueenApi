@@ -39,7 +39,7 @@ namespace BeautyQueenApi.Services
             return await _context.Service.FindAsync(id);
         }
 
-        public async Task<IEnumerable<ServiceDto>> Get()
+        public async Task<IEnumerable<ServiceDto>> Get(string? search)
         {
             if (_context.Service == null)
             {
@@ -47,6 +47,9 @@ namespace BeautyQueenApi.Services
             }
 
             IEnumerable<Service> services = await _context.Service.ToListAsync();
+
+            if(search != null || search?.Length > 0)
+                services = services.Where(x => x.Name.ToLower().Contains(search.ToLower()));
 
             return _mapper.Map<List<ServiceDto>>(services).ToList();
         }

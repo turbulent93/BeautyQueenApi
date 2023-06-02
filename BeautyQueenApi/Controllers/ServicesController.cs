@@ -26,11 +26,11 @@ namespace BeautyQueenApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ServiceDto>>> GetService()
+        public async Task<ActionResult<IEnumerable<ServiceDto>>> GetService(string? search)
         {
             try
             {
-                return Ok(await _serviceService.Get());
+                return Ok(await _serviceService.Get(search));
             }
             catch (Exception)
             {
