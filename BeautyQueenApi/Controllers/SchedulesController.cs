@@ -25,12 +25,12 @@ namespace BeautyQueenApi.Controllers
             _scheduleService = scheduleService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedule()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedule(int id, int? year, int? month)
         {
             try
             {
-                return Ok(await _scheduleService.Get());
+                return Ok(await _scheduleService.Get(id, year, month));
             } catch(Exception e)
             {
                 return BadRequest(e.Message);
@@ -59,18 +59,6 @@ namespace BeautyQueenApi.Controllers
                 await _scheduleService.Delete(id);
 
                 return NoContent();
-            } catch(Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<Schedule>>> GetByEmployee(int id)
-        {
-            try
-            {
-                return Ok(await _scheduleService.GetByEmployee(id));
             } catch(Exception e)
             {
                 return BadRequest(e.Message);
