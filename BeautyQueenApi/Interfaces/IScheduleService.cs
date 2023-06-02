@@ -6,7 +6,7 @@ namespace BeautyQueenApi.Interfaces
 {
     public interface IScheduleService
     {
-        Task<IEnumerable<ScheduleDto>> Get();
+        Task<IEnumerable<ScheduleDto>> Get(int id, int? year, int? month);
         Task<ScheduleDto> Post(RequestScheduleDto scheduleDto);
         Task Delete(int id);
         Task<Schedule?> Find(int id);
