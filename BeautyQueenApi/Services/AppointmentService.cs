@@ -64,5 +64,20 @@ namespace BeautyQueenApi.Services
             return await _context.Appointment.FindAsync(id);
         }
 
+        public async Task<IEnumerable<Appointment>> GetBySchedule(int employeeId, int scheduleId)
+        {
+            if(_context == null)
+            {
+                throw new Exception("Context is null");
+            }
+
+            return await _context.Appointment
+                .Where(x => x.EmployeeId == employeeId && x.ScheduleId == scheduleId)
+                .OrderBy(x => x.StartAt)
+                .OrderBy(x => x.EndAt)
+                .Include(x => x.Schedule)
+                .Include(x => x.Service)
+                .ToListAsync();
+        }
     }
 }
