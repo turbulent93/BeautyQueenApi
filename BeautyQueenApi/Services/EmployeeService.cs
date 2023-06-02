@@ -22,35 +22,47 @@ namespace BeautyQueenApi.Services
             _serviceService = serviceService;
         }
 
-        public async Task<IEnumerable<EmployeeDto>> Get()
+        public async Task<IEnumerable<EmployeeDto>> Get(string? search)
         {
             if(_context.Employee == null)
             {
                 throw new Exception("Context Employee is null");
             }
 
-            return _mapper.Map<List<EmployeeDto>>(
+            IEnumerable<EmployeeDto> employees = _mapper.Map<List<EmployeeDto>>(
                 await _context.Employee
                     .Include(x => x.Specialization)
                     .Include(x => x.Services)
                     .ToListAsync());
-        }
 
-        public async Task<Employee> GetById(int id)
-        {
-            Employee? employee = await _context.Employee
-                .Where(e => e.Id == id)
-                .Include(e => e.Services)
-                .Include(e => e.Specialization)
-                .Include(e => e.User)
-                .FirstOrDefaultAsync();
-
-            if(employee == null)
+            if(search == null || search.Length == 0)
             {
-                throw new Exception("Employee is not found");
+                return employees;
             }
 
-            return employee;
+            return employees.Where(x => x.Name.ToLower().Contains(search.ToLower()) || 
+                x.Surname.ToLower().Contains(search.ToLower()));
+        }
+
+        public async Task<IEnumerable<EmployeeDto>> GetByService(int id, string? search)
+        {
+            var service = await _context.Service.FindAsync(id);
+
+            if(service == null)
+            {
+                throw new Exception("Service is not found");
+            }
+
+            var employees = _context.Employee
+                .Include(x => x.Specialization)
+                .Where(x => x.Services.Contains(service));
+
+            if (search != null || search?.Length > 0)
+                employees = employees.Where(x => x.Name.ToLower().Contains(search.ToLower()) ||
+                    x.Surname.ToLower().Contains(search.ToLower()));
+
+            return _mapper.Map<List<EmployeeDto>>(employees);
+
         }
 
         public async Task<EmployeeDto> Post(RequestEmployeeDto employeeDto)
