@@ -38,6 +38,30 @@ namespace BeautyQueenApi.Controllers
             }
         }
 
+        [HttpGet("by-employee/{employeeId}")]
+        public async Task<ActionResult<IEnumerable<ServiceDto>>> GetByEmployee(int employeeId)
+        {
+            try
+            {
+                return Ok(await _serviceService.GetByEmployee(employeeId));
+            } catch(Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet("by-promo/{promoId}")]
+        public async Task<ActionResult<ServiceDto>> GetByService(int promoId)
+        {
+            try
+            {
+                return Ok(await _serviceService.GetByPromo(promoId));
+            } catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceDto>> GetService(int id)
         {

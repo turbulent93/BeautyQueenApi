@@ -19,11 +19,13 @@ namespace BeautyQueenApi.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IEmployeeService _employeeService;
+        private readonly IImageService _imageService;
 
-        public EmployeesController(ApplicationDbContext context, IEmployeeService employeeService)
+        public EmployeesController(ApplicationDbContext context, IEmployeeService employeeService, IImageService imageService)
         {
             _context = context;
             _employeeService = employeeService;
+            _imageService = imageService;
         }
 
         [HttpGet]
@@ -51,12 +53,24 @@ namespace BeautyQueenApi.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Employee>> GetById(int id)
+        {
+            try
+            {
+                return Ok(await _employeeService.GetById(id));
+            } catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpPost("image")]
         public async Task<ActionResult<string>> PostImage([FromForm] IFormFile image)
         {
             try
             {
-                return Ok(await _employeeService.AddImage(image));
+                return Ok(await _imageService.UploadImage("/files/employees", image));
             } catch (Exception e)
             {
                 return BadRequest(e.Message);

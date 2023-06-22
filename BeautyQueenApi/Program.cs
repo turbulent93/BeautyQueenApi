@@ -50,6 +50,7 @@ builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IScheduleService, ScheduleService>();
 builder.Services.AddTransient<IAppointmentService, AppointmentService>();
 builder.Services.AddTransient<IAdminService, AdminService>();
+builder.Services.AddTransient<IImageService, ImageService>();
 
 var app = builder.Build();
 
@@ -64,7 +65,7 @@ app.UseCors("FrontendPolicy");
 
 app.UseStaticFiles();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 

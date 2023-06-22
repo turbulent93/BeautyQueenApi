@@ -92,22 +92,25 @@ namespace BeautyQueenApi.Services
 
         public async Task<AuthDto> Login(RegisterDto adminDto)
         {
-            User? admin = await Find(adminDto.Login);
+            User? user = _context.User.Include(x => x.Role).FirstOrDefault(x => x.Login == adminDto.Login);
 
-            if(admin == null)
+            if(user == null)
             {
                 throw new Exception("Admin is not found");
             }
 
-            if (!BCrypt.Net.BCrypt.Verify(adminDto.Password, admin.Password))
+            if (!BCrypt.Net.BCrypt.Verify(adminDto.Password, user.Password))
             {
                 throw new Exception("Invalid login or password");
             }
 
             return new AuthDto
             {
-                AccessToken = CreateAccessToken(admin),
-                RefreshToken = await CreateRefreshToken(admin)
+                AccessToken = CreateAccessToken(user),
+                RefreshToken = await CreateRefreshToken(user),
+                UserId = user.Id,
+                Login = adminDto.Login,
+                Role = user.Role.Name
             };
         }
 

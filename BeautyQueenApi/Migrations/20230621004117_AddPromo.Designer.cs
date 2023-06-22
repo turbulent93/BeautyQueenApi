@@ -3,6 +3,7 @@ using System;
 using BeautyQueenApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BeautyQueenApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230621004117_AddPromo")]
+    partial class AddPromo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,10 +144,10 @@ namespace BeautyQueenApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateOnly?>("PeriodFrom")
+                    b.Property<DateOnly>("PeriodFrom")
                         .HasColumnType("date");
 
-                    b.Property<DateOnly?>("PeriodTo")
+                    b.Property<DateOnly>("PeriodTo")
                         .HasColumnType("date");
 
                     b.Property<string>("Title")

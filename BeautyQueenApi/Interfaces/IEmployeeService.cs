@@ -7,6 +7,7 @@ namespace BeautyQueenApi.Interfaces
     public interface IEmployeeService
     {
         Task<IEnumerable<EmployeeDto>> Get(string? search);
+        Task<Employee> GetById(int id);
         Task<EmployeeDto> Post(RequestEmployeeDto employeeDto);
         Task Put(int id, RequestPutEmployeeDto employeeDto);
         Task Delete(int id);

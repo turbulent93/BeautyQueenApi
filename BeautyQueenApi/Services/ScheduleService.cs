@@ -36,8 +36,10 @@ namespace BeautyQueenApi.Services
                 var curDate = DateOnly.FromDateTime(DateTime.Today);
                 var date = DateOnly.FromDateTime(DateTime.Today.AddDays(10));
 
-                schedules = schedules.Where(x => x.EmployeeId == id && 
-                    x.Date >= curDate && x.Date <= date);
+                schedules = schedules
+                    .OrderBy(x => x.Date)
+                    .Where(x => x.EmployeeId == id && 
+                        x.Date >= curDate && x.Date <= date);
             }
 
             return _mapper.Map<IEnumerable<ScheduleDto>>(schedules);

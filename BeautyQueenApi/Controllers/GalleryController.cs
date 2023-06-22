@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BeautyQueenApi.Data;
 using BeautyQueenApi.Models;
 using BeautyQueenApi.Dtos;
+using BeautyQueenApi.Interfaces;
 
 namespace BeautyQueenApi.Controllers
 {
@@ -16,22 +17,40 @@ namespace BeautyQueenApi.Controllers
     public class GalleryController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _appEnvironment;
+        private readonly IImageService _imageService;
 
-        public GalleryController(ApplicationDbContext context, IWebHostEnvironment appEnvironment)
+        public GalleryController(ApplicationDbContext context, IImageService imageService)
         {
             _context = context;
-            _appEnvironment = appEnvironment;
+            _imageService = imageService;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<Photo>>> GetPhoto(int id)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Photo>>> GetByService(int? serviceId, string? search)
         {
-          if (_context.Photo == null)
-          {
-              return NotFound();
-          }
-            return await _context.Photo.Where(photo => photo.ServiceId == id).ToListAsync();
+            if (_context.Photo == null)
+            {
+                return NotFound();
+            }
+            var photos = await _context.Photo.ToListAsync();
+
+            if(serviceId != null)
+            {
+                photos = photos.Where(photo => photo.ServiceId == serviceId).ToList();
+            }
+
+            if(search != null)
+            {
+                return Ok(photos.Where(photo => photo.Title.ToLower().Contains(search.ToLower())));
+            }
+
+            return Ok(photos);
+        }
+
+        [HttpGet("favorites")]
+        public async Task<ActionResult<IEnumerable<Photo>>> GetPhotos()
+        {
+            return Ok(await _context.Photo.Take(8).ToListAsync());
         }
 
         //[HttpGet("{id}")]
@@ -113,12 +132,7 @@ namespace BeautyQueenApi.Controllers
 
             foreach(var file in fileList.Images)
             {
-                string fileName = Guid.NewGuid() + "." + file.FileName.Split(".")[1];
-                string path = "/files/gallery/" + fileName;
-
-                using var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create);
-                await file.CopyToAsync(fileStream);
-                fileNames.Add(fileName);
+                fileNames.Add(await _imageService.UploadImage("/files/gallery/", file));
             }
 
             return fileNames;
@@ -127,16 +141,15 @@ namespace BeautyQueenApi.Controllers
         [HttpDelete("photo/{name}")]
         public ActionResult DeleteImage(string name)
         {
-            var path = _appEnvironment.WebRootPath + "/files/gallery/" + name;
-
-            if (System.IO.File.Exists(path))
+            try
             {
-                System.IO.File.Delete(path);
-
+                _imageService.DeleteImage("/files/gallery/", name);
                 return Ok();
+            } catch(Exception)
+            {
+                return BadRequest("File does not exists");
             }
 
-            return BadRequest("File does not exists");
         }
 
         [HttpDelete("{id}")]

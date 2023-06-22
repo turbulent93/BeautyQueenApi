@@ -12,14 +12,18 @@ namespace BeautyQueenApi.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _appEnvironment;
         private readonly IServiceService _serviceService;
-        public EmployeeService(ApplicationDbContext context, IMapper mapper, IWebHostEnvironment appEnvironment, IServiceService serviceService)
+        private readonly IImageService _imageService;
+        public EmployeeService(
+            ApplicationDbContext context, 
+            IMapper mapper, 
+            IServiceService serviceService, 
+            IImageService imageService)
         {
             _context = context;
             _mapper = mapper;
-            _appEnvironment = appEnvironment;
             _serviceService = serviceService;
+            _imageService = imageService;
         }
 
         public async Task<IEnumerable<EmployeeDto>> Get(string? search)
@@ -63,6 +67,22 @@ namespace BeautyQueenApi.Services
 
             return _mapper.Map<List<EmployeeDto>>(employees);
 
+        }
+
+        public async Task<Employee> GetById(int id)
+        {
+            var employee = await _context.Employee
+                .Include(x => x.Services)
+                .Include(x => x.Specialization)
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if(employee == null)
+            {
+                throw new Exception("Employee is not found");
+            }
+
+            return employee;
         }
 
         public async Task<EmployeeDto> Post(RequestEmployeeDto employeeDto)
@@ -136,13 +156,7 @@ namespace BeautyQueenApi.Services
 
         public async Task<string> AddImage(IFormFile image)
         {
-            string fileName = Guid.NewGuid() + "." + image.FileName.Split(".")[1];
-            string path = "/files/employees/" + fileName;
-
-            using var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create);
-            await image.CopyToAsync(fileStream);
-
-            return fileName;
+            return await _imageService.UploadImage("files/employees", image);
         }
 
         public async Task SetServicesByIds(Employee employee, List<int> serviceIds)
@@ -151,6 +165,8 @@ namespace BeautyQueenApi.Services
             {
                 throw new Exception("Service service is null");
             }
+
+            employee.Services.Clear();
 
             foreach (int serviceId in serviceIds)
             {

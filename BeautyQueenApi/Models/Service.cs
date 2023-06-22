@@ -12,5 +12,7 @@ namespace BeautyQueenApi.Models
         public int Duration { get; set; }
         [JsonIgnore]
         public List<Employee> Employees { get; set; }
+        [JsonIgnore]
+        public List<Promotion> Promotions { get; set; }
     }
 }

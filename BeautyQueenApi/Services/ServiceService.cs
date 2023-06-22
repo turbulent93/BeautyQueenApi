@@ -4,6 +4,7 @@ using BeautyQueenApi.Dtos;
 using BeautyQueenApi.Dtos.Request;
 using BeautyQueenApi.Interfaces;
 using BeautyQueenApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeautyQueenApi.Services
@@ -52,6 +53,42 @@ namespace BeautyQueenApi.Services
                 services = services.Where(x => x.Name.ToLower().Contains(search.ToLower()));
 
             return _mapper.Map<List<ServiceDto>>(services).ToList();
+        }
+
+        [HttpGet("{promoId}")]
+        public async Task<IEnumerable<ServiceDto>> GetByPromo(int promoId)
+        {
+            var promo = _context.Promo.Find(promoId);
+
+            if(promo == null)
+            {
+                throw new Exception("Promo is not found");
+            }
+
+            IEnumerable<Service> services = await _context.Service
+                .Include(x => x.Promotions)
+                .Where(x => x.Promotions.Contains(promo))
+                .ToListAsync();
+
+            return _mapper.Map<List<ServiceDto>>(services).ToList();
+        }
+
+        [HttpGet("{employeeId}")]
+        public async Task<IEnumerable<ServiceDto>> GetByEmployee(int employeeId)
+        {
+            var employee = await _context.Employee.FindAsync(employeeId);
+
+            if (employee == null)
+            {
+                throw new Exception("Employee is not found");
+            }
+
+            var services = await _context.Service
+                .Include(x => x.Employees)
+                .Where(x => x.Employees.Contains(employee))
+                .ToListAsync();
+
+            return _mapper.Map<List<ServiceDto>>(services);
         }
 
         public async Task<ServiceDto> GetById(int id)

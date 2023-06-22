@@ -14,5 +14,6 @@ namespace BeautyQueenApi.Data
         public DbSet<Role> Role { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Photo> Photo { get; set; }
+        public DbSet<Promotion> Promo { get; set; }
     }
 }
